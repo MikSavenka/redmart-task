@@ -1,6 +1,7 @@
 package com.task;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
@@ -41,15 +42,17 @@ public class Ski {
 
     private static File download() {
         URL url;
-        URLConnection connection;
+        HttpURLConnection connection = null;
         File file = new File("downloaded.txt");
         try {
             url = new URL("http://s3-ap-southeast-1.amazonaws.com/geeks.redmart.com/coding-problems/map.txt");
-            connection = url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
         try (InputStream in = connection.getInputStream();
              FileOutputStream fos = new FileOutputStream(file)) {
